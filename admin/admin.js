@@ -275,7 +275,7 @@ async function handlePhotoChoice(file) {
 
 
 /* ==========================================================================
-   6. Settings, tabs and publishing
+  6. Settings, tabs and publishing
    ========================================================================== */
 
 const SETTING_FIELDS = ["storeName", "tagline", "sellerNumber", "currency"];
@@ -314,42 +314,42 @@ function showTab(name) {
 
 
 /* ==========================================================================
-   Events
+  Events
    ========================================================================== */
 
-$("tabs").addEventListener("click", (e) => { if (e.target.dataset.tab) showTab(e.target.dataset.tab); });
+  $("tabs").addEventListener("click", (e) => { if (e.target.dataset.tab) showTab(e.target.dataset.tab); });
 
-$("product-rows").addEventListener("click", (e) => {
-  const button = e.target.closest("[data-action]");
-  if (button) handleRowAction(button);
-});
+  $("product-rows").addEventListener("click", (e) => {
+    const button = e.target.closest("[data-action]");
+    if (button) handleRowAction(button);
+  });
 
-$("search").addEventListener("input", renderTable);
-$("category-filter").addEventListener("change", renderTable);
-$("add-product").addEventListener("click", () => openEditor());
+  $("search").addEventListener("input", renderTable);
+  $("category-filter").addEventListener("change", renderTable);
+  $("add-product").addEventListener("click", () => openEditor());
 
-$("product-form").addEventListener("submit", saveProduct);
-$("cancel-product").addEventListener("click", () => $("product-dialog").close());
-$("p-file").addEventListener("change", (e) => handlePhotoChoice(e.target.files[0]));
-["p-name", "p-image", "p-color"].forEach((id) => $(id).addEventListener("input", renderPhotoPreview));
-$("download-photo").addEventListener("click", () => download(pendingPhoto.blob, $("p-image").value.trim()));
+  $("product-form").addEventListener("submit", saveProduct);
+  $("cancel-product").addEventListener("click", () => $("product-dialog").close());
+  $("p-file").addEventListener("change", (e) => handlePhotoChoice(e.target.files[0]));
+  ["p-name", "p-image", "p-color"].forEach((id) => $(id).addEventListener("input", renderPhotoPreview));
+  $("download-photo").addEventListener("click", () => download(pendingPhoto.blob, $("p-image").value.trim()));
 
-SETTING_FIELDS.forEach((key) =>
-  $(`set-${key}`).addEventListener("input", (e) => {
-    if (key === "sellerNumber") e.target.value = e.target.value.replace(/\D/g, ""); // digits only
-    state.settings[key] = e.target.value;
+  SETTING_FIELDS.forEach((key) =>
+    $(`set-${key}`).addEventListener("input", (e) => {
+      if (key === "sellerNumber") e.target.value = e.target.value.replace(/\D/g, ""); // digits only
+      state.settings[key] = e.target.value;
+      commit();
+    }));
+
+  $("import-file").addEventListener("change", (e) => importData(e.target.files[0]));
+  $("export-top").addEventListener("click", exportData);
+  $("export-main").addEventListener("click", exportData);
+  $("reset-draft").addEventListener("click", () => {
+    if (!confirm("Discard all unpublished changes?")) return;
+    state = clone(PUBLISHED);
+    fillSettingsForm();
     commit();
-  }));
+  });
 
-$("import-file").addEventListener("change", (e) => importData(e.target.files[0]));
-$("export-top").addEventListener("click", exportData);
-$("export-main").addEventListener("click", exportData);
-$("reset-draft").addEventListener("click", () => {
-  if (!confirm("Discard all unpublished changes?")) return;
-  state = clone(PUBLISHED);
   fillSettingsForm();
-  commit();
-});
-
-fillSettingsForm();
-renderAll();
+  renderAll();
